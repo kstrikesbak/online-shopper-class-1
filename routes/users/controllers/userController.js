@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const { validationResult } = require('express-validator');
+const faker = require('faker');
 
 module.exports = {
   register: (req, res, next) => {
@@ -9,18 +10,29 @@ module.exports = {
     }
     const { name, email, password } = req.body;
     User.findOne({ email }).then(user => {
-      if (user) return res.send('User Exists');
-      else {
+      if (user) {
+        // return req.flash('errors', 'User Already Exists');
+        return res.send('User Exists');
+      } else {
         const newUser = new User();
         newUser.profile.name = name;
+        newUser.profile.picture = faker.image.avatar();
         newUser.email = email;
         newUser.password = password;
+
         newUser
           .save()
           .then(user => {
-            if (user) {
-              res.status(200).json({ message: 'success', user });
-            }
+            req.login(user, err => {
+              if (err) {
+                return res
+                  .status(400)
+                  .json({ confirmation: false, message: err });
+              } else {
+                res.redirect('/');
+                next();
+              }
+            });
           })
           .catch(err => {
             return next(err);

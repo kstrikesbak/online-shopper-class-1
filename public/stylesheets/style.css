@@ -44,11 +44,13 @@ a {
 .myRegisterNav {
   color: white;
   padding-left: 20px;
+  font-family: 'Open Sans', Arial, Helvetica, sans-serif;
 }
 
 .myRegisterNav a {
   color: white;
   text-decoration: none;
+  font-family: 'Open Sans', Arial, Helvetica, sans-serif;
 }
 
 .myRegisterNav a:hover {
@@ -58,6 +60,7 @@ a {
 .myNavGreeting {
   color: orange;
   padding: 0 20px;
+  font-family: 'Open Sans', Arial, Helvetica, sans-serif;
 }
 
 .myNavGreeting a {
