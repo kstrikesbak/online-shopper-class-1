@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const User = require('../users/models/User');
 require('../../lib/passport');
 
 const userController = require('./controllers/userController');
@@ -63,5 +64,30 @@ router.get('/profile', (req, res, next) => {
   } else {
     return res.send('Unauthorized');
   }
+});
+
+router.put('/update-profile/:id', (req, res, next) => {
+  return new Promise((resolve, reject) => {
+    User.findById({ _id: req.params.id })
+      .then(user => {
+        if (req.body.name) user.profile.name = req.body.name;
+        if (req.body.email) user.email = req.body.email;
+        if (req.body.address) user.address = req.body.address;
+        return user;
+      })
+      .then(user => {
+        user.save().then(user => {
+          return res.json({ user });
+        });
+      })
+      .catch(err => reject(err));
+  }).catch(err => next(err));
+});
+
+router.get('/update-profile', (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.render('auth/update-profile');
+  }
+  return res.redirect('/');
 });
 module.exports = router;
