@@ -66,22 +66,33 @@ router.get('/profile', (req, res, next) => {
   }
 });
 
-router.put('/update-profile/:id', (req, res, next) => {
-  return new Promise((resolve, reject) => {
-    User.findById({ _id: req.params.id })
-      .then(user => {
-        if (req.body.name) user.profile.name = req.body.name;
-        if (req.body.email) user.email = req.body.email;
-        if (req.body.address) user.address = req.body.address;
-        return user;
-      })
-      .then(user => {
-        user.save().then(user => {
-          return res.json({ user });
-        });
-      })
-      .catch(err => reject(err));
-  }).catch(err => next(err));
+// router.put('/update-profile/:id', (req, res, next) => {
+//   return new Promise((resolve, reject) => {
+//     User.findById({ _id: req.params.id })
+//       .then(user => {
+//         if (req.body.name) user.profile.name = req.body.name;
+//         if (req.body.email) user.email = req.body.email;
+//         if (req.body.address) user.address = req.body.address;
+//         return user;
+//       })
+//       .then(user => {
+//         user.save().then(user => {
+//           return res.json({ user });
+//         });
+//       })
+//       .catch(err => reject(err));
+//   }).catch(err => next(err));
+// });
+router.put('/update-profile', (req, res, next) => {
+  userController
+    .updateProfile(req.body, req.user._id)
+    .then(user => {
+      return res.redirect('/api/users/profile');
+    })
+    .catch(err => {
+      console.log(err);
+      return res.redirect('/api/users/update-profile');
+    });
 });
 
 router.get('/update-profile', (req, res) => {

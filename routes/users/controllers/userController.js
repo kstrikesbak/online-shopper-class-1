@@ -39,6 +39,25 @@ module.exports = {
           });
       }
     });
+  },
+  updateProfile: (params, id) => {
+    const { name, email, address } = params;
+    return new Promise((resolve, reject) => {
+      User.findById(id)
+        .then(user => {
+          console.log('hello');
+          if (name) user.profile.name = name;
+          if (email) user.email = email;
+          if (address) user.address = address;
+          return user;
+        })
+        .then(user => {
+          user.save().then(user => {
+            resolve(user);
+          });
+        })
+        .catch(err => reject(err));
+    }).catch(err => reject(err));
   }
 
   //   register: async (req, res, next) => {
