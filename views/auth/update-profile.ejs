@@ -60,7 +60,23 @@
                   value="<%=user.address%>"
                 />
               </div>
-              <h5>Change Password:</h5>
+            </fieldset>
+            <div class="col-xs-6 col-sm-6 col-md-6" style="padding:0">
+              <input
+                type="submit"
+                class="btn btn-lg btn-success btn-block"
+                value="Update Profile"
+              />
+            </div>
+          </form>
+          <hr class="colorgraph" />
+          <form
+            role="form"
+            method="POST"
+            action="/api/users/update-password?_method=PUT"
+          >
+            <h5>Change Password:</h5>
+            <fieldset>
               <div class="form-group">
                 <br />
                 <label for="oldPassword">Old Password:</label>
@@ -95,16 +111,15 @@
                 />
               </div>
             </fieldset>
-            <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="col-xs-6 col-sm-6 col-md-6" style="padding:0">
               <input
                 type="submit"
                 class="btn btn-lg btn-success btn-block"
-                value="Update"
+                value="Update Password"
               />
             </div>
           </form>
           <hr class="colorgraph" />
-          <div class="row"></div>
         </div>
       </div>
     </div>

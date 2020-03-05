@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const { validationResult } = require('express-validator');
 const faker = require('faker');
+const bcrypt = require('bcryptjs');
 
 module.exports = {
   register: (req, res, next) => {
@@ -41,14 +42,21 @@ module.exports = {
     });
   },
   updateProfile: (params, id) => {
-    const { name, email, address } = params;
+    const {
+      name,
+      email,
+      address,
+      oldPassword,
+      newPassword,
+      repeatNewPassword
+    } = params;
     return new Promise((resolve, reject) => {
       User.findById(id)
         .then(user => {
-          console.log('hello');
           if (name) user.profile.name = name;
           if (email) user.email = email;
           if (address) user.address = address;
+
           return user;
         })
         .then(user => {
@@ -58,6 +66,47 @@ module.exports = {
         })
         .catch(err => reject(err));
     }).catch(err => reject(err));
+  },
+  updatePassword: (params, id) => {
+    return new Promise((resolve, reject) => {
+      User.findById(id)
+        .then(user => {
+          if (
+            !params.oldPassword ||
+            !params.newPassword ||
+            !params.repeatNewPassword
+          ) {
+            reject('All password inputs must be filled');
+          } else if (params.newPassword !== params.repeatNewPassword) {
+            reject('New passwords do not match');
+          } else {
+            bcrypt
+              .compare(params.oldPassword, user.password)
+              .then(result => {
+                if (result === false) {
+                  reject('Old Password Incorrect');
+                } else {
+                  console.log('save please');
+                  user.password = params.newPassword;
+                  user
+                    .save()
+                    .then(user => {
+                      resolve(user);
+                    })
+                    .catch(err => {
+                      throw new Error(err);
+                    });
+                }
+              })
+              .catch(err => {
+                throw new Error(err);
+              });
+          }
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
   }
 
   //   register: async (req, res, next) => {
